@@ -353,6 +353,8 @@ class PriceHistory:
         if dividends is not None:
             dividends = utils.set_df_tz(dividends, interval, tz_exchange)
             if 'currency' in dividends.columns:
+                print("Dividends with currency: BEFORE")
+                print(dividends.head())
                 # Rare, only seen with Vietnam market
                 price_currency = self._history_metadata['currency']
                 if price_currency is None:
@@ -369,6 +371,8 @@ class PriceHistory:
                             # FX conversion failed
                             dividends['Dividends'] = dividends['Dividends'].astype(str) + ' ' + dividends['currency']
                 dividends = dividends.drop('currency', axis=1)
+                print("Dividends with currency: AFTER")
+                print(dividends.head())
 
         if capital_gains is not None:
             capital_gains = utils.set_df_tz(capital_gains, interval, tz_exchange)
@@ -407,6 +411,9 @@ class PriceHistory:
         if dividends.shape[0] > 0:
             df = utils.safe_merge_dfs(df, dividends, interval)
         if "Dividends" in df.columns:
+            print("DataFrame when dividends are provided: BEFORE")
+            print(df)
+            print(df.dtypes)
             df.loc[df["Dividends"].isna(), "Dividends"] = 0
         else:
             df["Dividends"] = 0.0
